@@ -7,36 +7,40 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.annotation.Nullable;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * Created by patrick on 10/31/16.
  */
 public class RemoteService extends Service {
 
-    static final int SAY_POSITIVO = 0;
-    static final int SAY_NEGATIVO = 1;
 
-    class MyHandler extends Handler
-    {
+    Messenger mMessenger;
 
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            super.handleMessage(msg);
-            switch(msg.what)
-            {
-                case SAY_POSITIVO:
-                    Toast.makeText(getApplicationContext(), "POSITIVO", Toast.LENGTH_LONG).show();
-                    break;
-                case SAY_NEGATIVO:
-                    Toast.makeText(getApplicationContext(), "NEGATIVO", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        mMessenger = new Messenger(new MyHandler(getApplicationContext()));
+
+        Toast.makeText(this, "Service Started", LENGTH_LONG).show();
+
+        return START_STICKY;
     }
 
-    Messenger mMessenger = new Messenger(new MyHandler());
+    @Override
+    public void onDestroy() {
+
+        super.onDestroy();
+
+        Toast.makeText(this, "Service Destroyed", LENGTH_LONG).show();
+
+    }
+
+
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
